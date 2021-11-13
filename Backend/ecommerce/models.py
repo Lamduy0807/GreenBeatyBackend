@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,PermissionsMixin)
-from django.db.models.base import Model 
+from django.db.models.base import Model
+from django.db.models.deletion import CASCADE, SET_NULL 
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 from django.utils.text import slugify
 # Create your models here.
@@ -32,7 +33,7 @@ class User(AbstractBaseUser,PermissionsMixin):
     avt = models.ImageField(upload_to='avt',default='logo-uit.png')
     name = models.CharField(max_length=60,null=True,blank=True)
     phone = models.CharField(max_length=10, null=True,blank=True)
-    sex = models.CharField(max_length=5,null=True,blank=True)
+    sex = models.CharField(max_length=10,null=True,blank=True)
     orders = models.IntegerField(null=True,blank=True, default=0)
     dateofbirth=models.DateField(null=True, blank=True)
 
@@ -45,10 +46,13 @@ class User(AbstractBaseUser,PermissionsMixin):
         return self.email
     def tokens(self):
         refresh = RefreshToken.for_user(self)
-        return {
-            'refresh':str(refresh),
-            'access':str(refresh.access_token)
-        }
+        return str(refresh.access_token)
+            #'refresh':str(refresh),
+            #'access':
+    def tokenRe(self):
+        refresh = RefreshToken.for_user(self)
+        return str(refresh)       
+        
 
 User._meta.get_field('email')._unique = True
 User._meta.get_field('email')._blank = False
@@ -61,6 +65,12 @@ class ProductImage(models.Model):
 class ProductCategory(models.Model):
     name = models.CharField(max_length=300,null=True, blank=True)
     imagecategory = models.ImageField(upload_to='media',default=None)
+    producttype = models.ForeignKey("ProductType", on_delete=SET_NULL, null=True)
+    def __str__(self):
+        return self.name
+
+class ProductType(models.Model):
+    name = models.CharField(max_length=300,null=True, blank=True)
     def __str__(self):
         return self.name
 
@@ -68,7 +78,8 @@ class Product(models.Model):
     name = models.CharField(max_length=500, null=True,blank=True)
     description = models.TextField(null=True,blank=True)
     price = models.IntegerField(null=True,blank=True)
-    sold= models.IntegerField(default=0,null=True, blank=True)
+    sold = models.IntegerField(default=0,null=True, blank=True)
+    quantity = models.IntegerField(default=0,null=True, blank=True)
     instruction =models.TextField(null=True, blank=True)
     origin=models.CharField(max_length=50,null=True, blank=True)
     IsActive= models.BooleanField(default=True)

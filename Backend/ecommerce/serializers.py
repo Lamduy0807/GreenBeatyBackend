@@ -9,6 +9,7 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from rest_framework.serializers import ModelSerializer
+
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=68, min_length=6, write_only=True)
 
@@ -30,10 +31,11 @@ class LoginSerializers(serializers.ModelSerializer):
     email = serializers.EmailField(max_length=255, min_length=3)
     password= serializers.CharField(max_length=68, min_length=6,write_only=True)
     tokens=serializers.CharField(max_length=68, min_length=6,read_only=True)
-
+    tokenRe=serializers.CharField(max_length=68, min_length=6,read_only=True)
+    id = serializers.CharField(max_length=68, min_length=1,read_only=True)
     class Meta:
         model=User
-        fields=['email','password','tokens']
+        fields=['email','password','tokens','tokenRe',"id"]
     def validate(self, attrs):
         email=attrs.get('email','')
         password=attrs.get('password','')
@@ -47,8 +49,10 @@ class LoginSerializers(serializers.ModelSerializer):
             raise AuthenticationFailed('Account has not verified yet, check register mail again')
         
         return {
+            'id': user.id,
             'email':user.email,
-            'tokens':user.tokens
+            'tokens':user.tokens,
+            'tokenRe': user.tokenRe
         }
 class ResetPasswordViaEmailSerializer(serializers.Serializer):
     email=serializers.EmailField( min_length=2)
@@ -83,20 +87,33 @@ class ResetPassWordSerializer(serializers.Serializer):
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields=['id','name', 'email',  'password', "phone","orders", "avt"]
+        fields=['id','name', 'email', "phone","orders", "avt", "sex", "dateofbirth"]
         extra_kwargs ={
             'password' :{'write_only':'true'}
         }
-
+class UploadAvtSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id','avt']
+        
 class ProductSerializer(ModelSerializer):
     class Meta:
         model = Product
-        fields = ["id", "name", "description","price", "sold","instruction", "origin","IsActive", "images", "category","priceSale","IsFlashsale"]
+        fields = ["id", "name", "description","price", "sold", "quantity","instruction", "origin","IsActive", "images", "category","priceSale","IsFlashsale"]
+    extra_kwargs ={
+            'sold' :{'write_only':'true'}
+        }
+
+class ProductTypeSerializer(ModelSerializer):
+    class Meta:
+        model = ProductType
+        fields = ["id", "name"]
+
 
 class ProductCategorySerializer(ModelSerializer):
     class Meta:
         model = ProductCategory
-        fields=["id", "name"]
+        fields=["id", "name","imagecategory", "producttype"]
 
 class ProductImageSerializer(ModelSerializer):
     class Meta:
