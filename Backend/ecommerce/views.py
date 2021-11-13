@@ -1,5 +1,7 @@
+from django.db.models import query
 from django.shortcuts import render
 from rest_framework import exceptions, generics, serializers
+from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from .models import *
@@ -14,6 +16,9 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from rest_framework import serializers, viewsets
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
+
 # Create your views here.
 class RegisterView(generics.GenericAPIView):
     queryset = User.objects.all()
@@ -113,7 +118,11 @@ class SetNewPasswordAPIView(generics.GenericAPIView):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer 
-    
+    permission_classes  = [IsAuthenticated,]
+class UploadViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UploadAvtSerializer
+
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.filter(IsActive=True)
     serializer_class = ProductSerializer
@@ -121,6 +130,10 @@ class ProductViewSet(viewsets.ModelViewSet):
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = ProductCategory.objects.all()
     serializer_class = ProductCategorySerializer
+
+class ProductTypeViewSet(viewsets.ModelViewSet):
+    queryset = ProductType.objects.all()
+    serializer_class = ProductTypeSerializer
 
 class ProductImageViewSet(viewsets.ModelViewSet):
     queryset = ProductImage.objects.all()

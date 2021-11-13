@@ -11,8 +11,10 @@ from rest_framework.routers import DefaultRouter
 from django.conf.urls.static import static
 from django.conf import settings
 router = DefaultRouter()
+
 router.register('product', views.ProductViewSet)
 router.register('category',views.CategoryViewSet)
+router.register('type',views.ProductTypeViewSet)
 router.register('img',views.ProductImageViewSet)
 router.register('rating', views.RatingViewSet)
 router.register("lovelist",views.LoveListViewSet)
