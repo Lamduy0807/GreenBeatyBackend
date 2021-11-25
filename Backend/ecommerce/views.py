@@ -1,7 +1,8 @@
 from django.db.models import query
 from django.shortcuts import render
 from rest_framework import exceptions, generics, serializers
-from rest_framework.decorators import authentication_classes, permission_classes
+from rest_framework import permissions
+from rest_framework.decorators import action, authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from .models import *
@@ -126,6 +127,21 @@ class UploadViewSet(viewsets.ModelViewSet):
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.filter(IsActive=True)
     serializer_class = ProductSerializer
+    def get_permissions(self):
+        if self.action == 'add-rating':
+            return [permissions.IsAuthenticated(),]
+        return [permissions.AllowAny(),]
+
+    @action(methods=['post'], detail=True, url_path='add-rating')
+    def add_Rating(self, request, pk):
+        ratingcomment = request.data.get('comment')
+        ratingpoint = request.data.get('point')
+        img = request.data.get('img')
+
+        if ratingcomment:
+            r = Rating.objects.create(ratingcomment=ratingcomment, product = self.get_object(), ratingpoint= ratingpoint, img = img, user = request.user)
+            return Response(RatingSerializer(r).data,status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_403_FORBIDDEN)
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = ProductCategory.objects.all()
@@ -139,9 +155,18 @@ class ProductImageViewSet(viewsets.ModelViewSet):
     queryset = ProductImage.objects.all()
     serializer_class = ProductImageSerializer
 
-class RatingViewSet(viewsets.ModelViewSet):
+class RatingViewSet(generics.GenericAPIView):
     queryset = Rating.objects.all()
-    serializer_class = RatingSerializer
+
+    def get(self, request, id, point):
+        if(int(point) > 0):
+            r = Rating.objects.filter(product = id, ratingpoint = point)
+            seri = RatingSerializer(r,many=True)
+            return Response(seri.data, status=status.HTTP_200_OK)
+        else:
+            r = Rating.objects.filter(product = id)
+            seri = RatingSerializer(r,many=True)
+            return Response(seri.data, status=status.HTTP_200_OK)
 
 class LoveListViewSet(viewsets.ModelViewSet):
     queryset = LoveList.objects.all()
