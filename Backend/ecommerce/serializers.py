@@ -123,7 +123,8 @@ class ProductImageSerializer(ModelSerializer):
 class RatingSerializer(ModelSerializer):
     class Meta:
         model=Rating
-        fields=["id","dayandtime","ratingpoint", "ratingcomment","img","product","user"] 
+        fields=["id","dayandtime","ratingpoint", "ratingcomment","img","product","user"]
+         
 class LoveListSerializer(ModelSerializer):
     class Meta:
         model= LoveList
