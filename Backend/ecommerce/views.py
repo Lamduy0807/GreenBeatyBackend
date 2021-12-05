@@ -20,6 +20,14 @@ from rest_framework import serializers, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 
+
+# khúc này mới thêm 4 dòng
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.generics import ListAPIView
+from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework import filters
+
+
 # Create your views here.
 class RegisterView(generics.GenericAPIView):
     queryset = User.objects.all()
@@ -124,7 +132,7 @@ class UploadViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UploadAvtSerializer
 
-class ProductViewSet(viewsets.ModelViewSet):
+class ProductViewSet(viewsets.ModelViewSet, ListAPIView):
     queryset = Product.objects.filter(IsActive=True)
     serializer_class = ProductSerializer
     def get_permissions(self):
@@ -143,9 +151,18 @@ class ProductViewSet(viewsets.ModelViewSet):
             return Response(RatingSerializer(r).data,status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_403_FORBIDDEN)
 
+
+# Nga Add
+    filter_backends = (SearchFilter, OrderingFilter)
+    search_fields = ['name']
+
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = ProductCategory.objects.all()
     serializer_class = ProductCategorySerializer
+
+# Nga Add
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['producttype']
 
 class ProductTypeViewSet(viewsets.ModelViewSet):
     queryset = ProductType.objects.all()
@@ -154,6 +171,10 @@ class ProductTypeViewSet(viewsets.ModelViewSet):
 class ProductImageViewSet(viewsets.ModelViewSet):
     queryset = ProductImage.objects.all()
     serializer_class = ProductImageSerializer
+
+# Nga Add
+    # filter_backends = (SearchFilter, OrderingFilter)
+    # search_fields = ['id']
 
 class RatingViewSet(generics.GenericAPIView):
     queryset = Rating.objects.all()
@@ -193,9 +214,13 @@ class WardViewSet(viewsets.ModelViewSet):
     queryset = Wards.objects.all()
     serializer_class = WardSerializer
 
-class DeliveryViewSet(viewsets.ModelViewSet):
+class DeliveryViewSet(viewsets.ModelViewSet, ListAPIView):
     queryset = Delivery.objects.all()
     serializer_class = DeliverySerializer
+
+# Nga Add
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['user','defaultAddress']
 
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
@@ -205,6 +230,9 @@ class DetailOrderViewSet(viewsets.ModelViewSet):
     queryset = DetailOrder.objects.all()
     serializer_class = DetailOrderSerializer
 
-class CartViewSet(viewsets.ModelViewSet):
+class CartViewSet(viewsets.ModelViewSet, ListAPIView):
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
+# Nga Add
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['user','product']
