@@ -222,13 +222,27 @@ class DeliveryViewSet(viewsets.ModelViewSet, ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['user','defaultAddress']
 
-class OrderViewSet(viewsets.ModelViewSet):
+class OrderViewSet(viewsets.ModelViewSet, ListAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['user','status']
 
-class DetailOrderViewSet(viewsets.ModelViewSet):
+class DetailOrderViewSet(viewsets.ModelViewSet, ListAPIView):
     queryset = DetailOrder.objects.all()
     serializer_class = DetailOrderSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['order']
+    @action (methods=['post'],detail=True,url_path="set-rating", url_name="set-rating")
+    def set_rating(self, request, pk):
+        try:
+            l = DetailOrder.objects.get(pk=pk)
+            l.isRating = True
+            l.save()
+        except DetailOrder.DoesNotExists:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(status=status.HTTP_200_OK)
 
 class CartViewSet(viewsets.ModelViewSet, ListAPIView):
     queryset = Cart.objects.all()

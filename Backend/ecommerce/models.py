@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,PermissionsMixin)
 from django.db.models.base import Model
-from django.db.models.deletion import CASCADE, SET_NULL 
+from django.db.models.deletion import CASCADE, SET_NULL
+from django.utils import tree 
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 from django.utils.text import slugify
 # Create your models here.
@@ -87,6 +88,7 @@ class Product(models.Model):
     category=models.ForeignKey(ProductCategory,on_delete=models.SET_NULL,null=True)
     IsFlashsale= models.BooleanField(default=False)
     priceSale = models.IntegerField(null=True,blank=True)
+    imagepresent = models.ImageField(upload_to='media',default=None)
     # add pricesale, isSale: already
     
 class Rating(models.Model):
@@ -157,6 +159,8 @@ class DetailOrder (models.Model):
     order = models.ForeignKey(Order,on_delete=models.CASCADE,null=True)
     product = models.ForeignKey(Product,on_delete=models.SET_NULL,null=True)
     quantities = models.IntegerField(null=True, blank=True)
+    #add thêm
+    isRating = models.BooleanField(null=True, blank=True, default=False)
 
 class Cart(models.Model):
     product = models.ForeignKey(Product,on_delete=models.CASCADE,null=True)

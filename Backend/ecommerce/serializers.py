@@ -99,7 +99,7 @@ class UploadAvtSerializer(ModelSerializer):
 class ProductSerializer(ModelSerializer):
     class Meta:
         model = Product
-        fields = ["id", "name", "description","price", "sold", "quantity","instruction", "origin","IsActive", "images", "category","priceSale","IsFlashsale"]
+        fields = ["id", "name", "description","price", "sold", "quantity","instruction", "origin","IsActive", "images", "category","priceSale","IsFlashsale","imagepresent"]
     extra_kwargs ={
             'sold' :{'write_only':'true'}
         }
