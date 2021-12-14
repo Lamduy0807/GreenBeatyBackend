@@ -9,7 +9,7 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from rest_framework.serializers import ModelSerializer
-
+from rest_framework import status
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=68, min_length=6, write_only=True)
 
@@ -33,18 +33,19 @@ class LoginSerializers(serializers.ModelSerializer):
     tokens=serializers.CharField(max_length=68, min_length=6,read_only=True)
     tokenRe=serializers.CharField(max_length=68, min_length=6,read_only=True)
     id = serializers.CharField(max_length=68, min_length=1,read_only=True)
+    is_staff = serializers.BooleanField(read_only=True)
     class Meta:
         model=User
-        fields=['email','password','tokens','tokenRe',"id"]
+        fields=['email','password','tokens','tokenRe',"id","is_staff"]
     def validate(self, attrs):
         email=attrs.get('email','')
         password=attrs.get('password','')
 
         user=auth.authenticate(email=email,password=password)
         if not user:
-            raise AuthenticationFailed('Ivalid credential, try again')
+            raise AuthenticationFailed('Ivalid credential, try again',status=status.HTTP_403_FORBIDDEN)
         if not user.is_active:
-            raise AuthenticationFailed('Account disable, contact admin')
+            raise AuthenticationFailed('Account disable, contact admin',)
         if not user.is_verified:
             raise AuthenticationFailed('Account has not verified yet, check register mail again')
         
@@ -52,7 +53,8 @@ class LoginSerializers(serializers.ModelSerializer):
             'id': user.id,
             'email':user.email,
             'tokens':user.tokens,
-            'tokenRe': user.tokenRe
+            'tokenRe': user.tokenRe,
+            'is_staff': user.is_staff
         }
 class ResetPasswordViaEmailSerializer(serializers.Serializer):
     email=serializers.EmailField( min_length=2)
@@ -87,7 +89,7 @@ class ResetPassWordSerializer(serializers.Serializer):
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields=['id','name', 'email', "phone","orders", "avt", "sex", "dateofbirth"]
+        fields=['id','name', 'email', "phone","orders", "avt", "sex", "dateofbirth","is_staff"]
         extra_kwargs ={
             'password' :{'write_only':'true'}
         }
