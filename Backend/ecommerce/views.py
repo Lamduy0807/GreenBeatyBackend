@@ -133,7 +133,7 @@ class UploadViewSet(viewsets.ModelViewSet):
     serializer_class = UploadAvtSerializer
 
 class ProductViewSet(viewsets.ModelViewSet, ListAPIView):
-    queryset = Product.objects.filter(IsActive=True)
+    queryset = Product.objects.all()
     serializer_class = ProductSerializer
     def get_permissions(self):
         if self.action == 'add-rating':
@@ -171,6 +171,9 @@ class ProductTypeViewSet(viewsets.ModelViewSet):
 class ProductImageViewSet(viewsets.ModelViewSet):
     queryset = ProductImage.objects.all()
     serializer_class = ProductImageSerializer
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['product']
 
 # Nga Add
     # filter_backends = (SearchFilter, OrderingFilter)
