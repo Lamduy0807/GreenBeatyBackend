@@ -82,6 +82,7 @@ class Product(models.Model):
     sold = models.IntegerField(default=0,null=True, blank=True)
     quantity = models.IntegerField(default=0,null=True, blank=True)
     instruction =models.TextField(null=True, blank=True)
+    Ingredient =models.TextField(null=True, blank=True)
     origin=models.CharField(max_length=50,null=True, blank=True)
     IsActive= models.BooleanField(default=True)
     images=models.ManyToManyField("ProductImage",blank=True,)
