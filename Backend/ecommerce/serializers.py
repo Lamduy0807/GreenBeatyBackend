@@ -101,7 +101,7 @@ class UploadAvtSerializer(ModelSerializer):
 class ProductSerializer(ModelSerializer):
     class Meta:
         model = Product
-        fields = ["id", "name", "description","price", "sold", "quantity","instruction", "Ingredient","origin","IsActive", "images", "category","priceSale","IsFlashsale","imagepresent"]
+        fields = ["id", "name", "description","price", "sold", "quantity","instruction", "Ingredient","origin","IsActive", "category","priceSale","IsFlashsale","imagepresent"]
     extra_kwargs ={
             'sold' :{'write_only':'true'}
         }
@@ -120,7 +120,7 @@ class ProductCategorySerializer(ModelSerializer):
 class ProductImageSerializer(ModelSerializer):
     class Meta:
         model=ProductImage
-        fields=["id","img"] 
+        fields=["id","img","product"] 
 
 class RatingSerializer(ModelSerializer):
     class Meta:

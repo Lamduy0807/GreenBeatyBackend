@@ -59,9 +59,8 @@ User._meta.get_field('email')._unique = True
 User._meta.get_field('email')._blank = False
 
 
-class ProductImage(models.Model):
-    img=models.ImageField(upload_to='media',default=None)
-    
+
+
 
 class ProductCategory(models.Model):
     name = models.CharField(max_length=300,null=True, blank=True)
@@ -85,13 +84,15 @@ class Product(models.Model):
     Ingredient =models.TextField(null=True, blank=True)
     origin=models.CharField(max_length=50,null=True, blank=True)
     IsActive= models.BooleanField(default=True)
-    images=models.ManyToManyField("ProductImage",blank=True,)
     category=models.ForeignKey(ProductCategory,on_delete=models.SET_NULL,null=True)
     IsFlashsale= models.BooleanField(default=False)
     priceSale = models.IntegerField(null=True,blank=True)
     imagepresent = models.ImageField(upload_to='media',default=None)
     # add pricesale, isSale: already
-    
+class ProductImage(models.Model):
+    img=models.ImageField(upload_to='media',default=None)
+    product = models.ForeignKey(Product,on_delete=models.SET_NULL,null=True) 
+      
 class Rating(models.Model):
     dayandtime = models.DateTimeField(auto_now_add=True)
     ratingpoint = models.IntegerField(null=True,blank=True)
