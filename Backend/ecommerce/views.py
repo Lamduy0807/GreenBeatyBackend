@@ -191,7 +191,17 @@ class RatingViewSet(generics.GenericAPIView):
             r = Rating.objects.filter(product = id)
             seri = RatingSerializer(r,many=True)
             return Response(seri.data, status=status.HTTP_200_OK)
+    def getuser(self, request,user):
+        r = Rating.objects.filter(user = user)
+        seri = RatingSerializer(r,many=True)
+        return Response(seri.data, status=status.HTTP_200_OK)
+class RatingViewSet1(generics.GenericAPIView):
+    queryset = Rating.objects.all()
 
+    def get(self, request,user):
+        r = Rating.objects.filter(user = user)
+        seri = RatingSerializer(r,many=True)
+        return Response(seri.data, status=status.HTTP_200_OK)
 class LoveListViewSet(viewsets.ModelViewSet):
     queryset = LoveList.objects.all()
     serializer_class = LoveListSerializer
