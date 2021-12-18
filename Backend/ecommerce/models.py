@@ -169,3 +169,5 @@ class Cart(models.Model):
     user = models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
     isSelections = models.BooleanField(default=False)
     quantities =  models.IntegerField(null=True, blank=True)
+class Banner(models.Model):
+    image = models.ImageField(upload_to='media',default=None)

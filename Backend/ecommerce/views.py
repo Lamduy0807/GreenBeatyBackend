@@ -253,3 +253,6 @@ class CartViewSet(viewsets.ModelViewSet, ListAPIView):
 # Nga Add
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['user','product']
+class BannerViewSet(viewsets.ModelViewSet,ListAPIView):
+    queryset = Banner.objects.all()
+    serializer_class = BannerSerializer
