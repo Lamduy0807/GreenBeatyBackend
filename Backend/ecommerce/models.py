@@ -87,6 +87,7 @@ class Product(models.Model):
     category=models.ForeignKey(ProductCategory,on_delete=models.SET_NULL,null=True)
     IsFlashsale= models.BooleanField(default=False)
     priceSale = models.IntegerField(null=True,blank=True)
+    brand = models.CharField(max_length=500, null=True,blank=True)
     imagepresent = models.ImageField(upload_to='media',default=None)
     # add pricesale, isSale: already
 class ProductImage(models.Model):
