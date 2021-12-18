@@ -28,7 +28,7 @@ router.register("wards", views.WardViewSet)
 router.register("order", views.OrderViewSet)
 router.register("detailorder", views.DetailOrderViewSet)
 router.register("cart", views.CartViewSet)
-
+router.register("banner", views.BannerViewSet)
 urlpatterns=[
     path('',include(router.urls)),
     path('register/', RegisterView.as_view(), name="register"),

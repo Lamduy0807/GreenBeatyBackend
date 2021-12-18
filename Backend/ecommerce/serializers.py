@@ -179,3 +179,7 @@ class CartSerializer(ModelSerializer):
     class Meta:
         model = Cart
         fields = '__all__'
+class BannerSerializer(ModelSerializer):
+    class Meta:
+        model = Banner
+        fields = '__all__'
