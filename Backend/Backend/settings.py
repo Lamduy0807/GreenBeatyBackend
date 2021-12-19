@@ -116,7 +116,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'doan1db',
         'USER': 'root',
-        'PASSWORD': '12345678',
+        'PASSWORD': '19521880UIT*',
         'HOST':'',
     }
 }

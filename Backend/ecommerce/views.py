@@ -153,8 +153,12 @@ class ProductViewSet(viewsets.ModelViewSet, ListAPIView):
 
 
 # Nga Add
-    filter_backends = (SearchFilter, OrderingFilter)
-    search_fields = ['name']
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = [ 'category','IsActive']
+    search_fields = ['name', ]
+
+    # filter_backends = [DjangoFilterBackend]
+    # filterset_fields = ['product']
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = ProductCategory.objects.all()
