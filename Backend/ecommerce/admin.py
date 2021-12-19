@@ -17,7 +17,7 @@ class ProductAdmin(ImportExportModelAdmin):
 class IngredientsResource(resources.ModelResource):
     class Meta:
         model = Ingredients
-        fields= ("id","name", "levelOfSave", "Description")
+        fields= ("id","name", "levelOfSave", "Description","slug")
         skip_unchange = True
         report_skipped = False
 
