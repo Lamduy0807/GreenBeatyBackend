@@ -13,6 +13,18 @@ class ProductResource(resources.ModelResource):
 class ProductAdmin(ImportExportModelAdmin):
     resource_class = ProductResource
 
+
+class IngredientsResource(resources.ModelResource):
+    class Meta:
+        model = Ingredients
+        fields= ("id","name", "levelOfSave", "Description")
+        skip_unchange = True
+        report_skipped = False
+
+class IngredientsAdmin(ImportExportModelAdmin):
+    resource_class = IngredientsResource
+
+
 # Register your models here.
 admin.site.register(User)
 admin.site.register(Product,ProductAdmin)
@@ -21,7 +33,7 @@ admin.site.register(ProductImage)
 admin.site.register(Rating)
 admin.site.register(LoveList)
 admin.site.register(IngredientsTag)
-admin.site.register(Ingredients)
+admin.site.register(Ingredients,IngredientsAdmin)
 admin.site.register(Delivery)
 admin.site.register(Order)
 admin.site.register(DetailOrder)

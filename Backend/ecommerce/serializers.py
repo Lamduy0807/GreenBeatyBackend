@@ -140,7 +140,7 @@ class TagSerializer(ModelSerializer):
 class IngredientSerializer(ModelSerializer):
     class Meta:
         model= Ingredients
-        fields= ["id","name","Tag","Description","levelOfSave"]
+        fields= ["id","name","Description","levelOfSave"]
         lookup_field = 'slug'
         extra_kwargs = {
             'url': {'lookup_field': 'slug'}
