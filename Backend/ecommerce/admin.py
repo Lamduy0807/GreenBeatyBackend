@@ -7,7 +7,7 @@ from import_export import resources
 class ProductResource(resources.ModelResource):
     class Meta:
         model = Product
-        fields= ("id","name", "description", "price", "quantity", "instruction","Ingredient","origin","category", "imagepresent")
+        fields= ("id","name", "description", "price", "quantity", "instruction","Ingredient","origin","IsActive","category", "priceSale", "IsFlashsale","brand")
         skip_unchange = True
         report_skipped = False
 class ProductAdmin(ImportExportModelAdmin):
@@ -24,11 +24,31 @@ class IngredientsResource(resources.ModelResource):
 class IngredientsAdmin(ImportExportModelAdmin):
     resource_class = IngredientsResource
 
+#=======================
+class ProductTypeResource(resources.ModelResource):
+    class Meta:
+        model = ProductType
+        fields= ("id","name")
+        skip_unchange = True
+        report_skipped = False
+
+class ProductTypeAdmin(ImportExportModelAdmin):
+    resource_class = ProductTypeResource
+#=======================
+class ProductCategoryResource(resources.ModelResource):
+    class Meta:
+        model = ProductCategory
+        fields= ("id","name","producttype")
+        skip_unchange = True
+        report_skipped = False
+
+class ProductCategoryAdmin(ImportExportModelAdmin):
+    resource_class = ProductCategoryResource
 
 # Register your models here.
 admin.site.register(User)
 admin.site.register(Product,ProductAdmin)
-admin.site.register(ProductCategory)
+admin.site.register(ProductCategory,ProductCategoryAdmin)
 admin.site.register(ProductImage)
 admin.site.register(Rating)
 admin.site.register(LoveList)
@@ -41,5 +61,5 @@ admin.site.register(Cart)
 admin.site.register(Provinces)
 admin.site.register(Districts)
 admin.site.register(Wards)
-admin.site.register(ProductType)
+admin.site.register(ProductType,ProductTypeAdmin)
 admin.site.register(Banner)
