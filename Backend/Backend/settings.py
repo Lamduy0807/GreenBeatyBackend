@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'ecommerce',
     'rest_framework',
      'django_filters',
+     'import_export',
 ]
 
 MIDDLEWARE = [
@@ -115,7 +116,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'doan1db',
         'USER': 'root',
-        'PASSWORD': '12345678',
+        'PASSWORD': '19521880UIT*',
         'HOST':'',
     }
 }
@@ -156,6 +157,8 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
+
+IMPORT_EXPORT_USE_TRANSACTION = True
 
 STATIC_URL = '/static/'
 

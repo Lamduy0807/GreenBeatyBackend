@@ -202,9 +202,13 @@ class RatingViewSet1(generics.GenericAPIView):
         r = Rating.objects.filter(user = user)
         seri = RatingSerializer(r,many=True)
         return Response(seri.data, status=status.HTTP_200_OK)
-class LoveListViewSet(viewsets.ModelViewSet):
+class LoveListViewSet(viewsets.ModelViewSet, ListAPIView):
     queryset = LoveList.objects.all()
     serializer_class = LoveListSerializer
+
+    # Nga Add
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['customer_id','product_id']
 
 class TagViewSet(viewsets.ModelViewSet):
     queryset = IngredientsTag.objects.all()
