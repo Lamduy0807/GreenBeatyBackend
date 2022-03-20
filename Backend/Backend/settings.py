@@ -43,9 +43,12 @@ INSTALLED_APPS = [
     'rest_framework',
      'django_filters',
      'import_export',
+     "corsheaders",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -116,7 +119,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'doan1db',
         'USER': 'root',
-        'PASSWORD': '19521880UIT*',
+        'PASSWORD': '12345678',
         'HOST':'',
     }
 }
@@ -177,3 +180,7 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'greenbeautyinfor@gmail.com'
 EMAIL_HOST_PASSWORD = 'GreenBeauty12322132'
 DEFAULT_FROM_EMAIL = 'GreenBeauty <noreply@greenbeauty.com>'
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
