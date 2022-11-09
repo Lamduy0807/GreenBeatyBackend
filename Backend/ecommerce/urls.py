@@ -40,7 +40,7 @@ urlpatterns=[
     path('rating/<id>/<point>/',RatingViewSet.as_view(),name = "rating-point"),
     path('password-reset/<uidb64>/<token>/',auth_view.PasswordResetConfirmView.as_view(template_name="ecommerce/reset_form.html"),name='password-reset'),
     path('password_reset_complete/',auth_view.PasswordResetCompleteView.as_view(template_name="ecommerce/reset_done.html"),name='password_reset_complete'),
-    path('test/<id>/', RecommendViewSet.as_view()),
+    path('recommend/<id>/', RecommendViewSet.as_view()),
 ]
 if settings.DEBUG:
      urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

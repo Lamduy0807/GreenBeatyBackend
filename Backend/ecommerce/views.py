@@ -315,7 +315,7 @@ def SVD(matrix):
 
 class RecommendViewSet(APIView):
     
-    @action (methods=['get'],detail=True,url_path="test", url_name="test")    
+    @action (methods=['get'],detail=True,url_path="recommend", url_name="recommend")    
     def get(self, request, id):
         matrix = data_preparetion()
         re = SVD(matrix)
