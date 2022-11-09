@@ -19,6 +19,14 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from rest_framework import serializers, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.views import APIView
+from django.db import connection
+import pandas as pd
+import sklearn as sk
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.decomposition import TruncatedSVD
 
 
 # khúc này mới thêm 4 dòng
@@ -246,7 +254,7 @@ class DeliveryViewSet(viewsets.ModelViewSet, ListAPIView):
 class OrderViewSet(viewsets.ModelViewSet, ListAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ['user','status']
 
 class DetailOrderViewSet(viewsets.ModelViewSet, ListAPIView):
@@ -274,3 +282,55 @@ class CartViewSet(viewsets.ModelViewSet, ListAPIView):
 class BannerViewSet(viewsets.ModelViewSet,ListAPIView):
     queryset = Banner.objects.all()
     serializer_class = BannerSerializer
+
+def get_product_data():
+        cursor = connection.cursor()
+        cursor.execute("select ecommerce_user.id as 'user_id', ecommerce_product.id as 'product_id'from doan1db.ecommerce_user, doan1db.ecommerce_product")
+        product_user = cursor.fetchall()
+        product = pd.DataFrame(product_user, columns=['user_id', 'product_id'])
+        return product
+def get_rating_data():
+        cursor = connection.cursor()
+        cursor.execute("Select product_id, AVG(ratingpoint) as rating, user_id from doan1db.ecommerce_rating group by product_id, user_id")
+        rating = cursor.fetchall()
+        rates = pd.DataFrame(rating, columns=['product_id', 'rating','user_id'])
+        return rates
+
+def data_preparetion():
+    product = get_product_data()
+    rating = get_rating_data()
+
+    data = pd.merge(rating, product, on = ['user_id','product_id'], how = 'outer')
+    matrix = data.pivot(columns='product_id',index='user_id',values='rating')
+    matrix = matrix.fillna(0)
+
+    return matrix
+
+def SVD(matrix):
+    X  = matrix.T
+    SVD = TruncatedSVD(n_components=6, random_state=3)
+
+    resultant_matrix = SVD.fit_transform(X)
+    return resultant_matrix
+
+class RecommendViewSet(APIView):
+    
+    @action (methods=['get'],detail=True,url_path="test", url_name="test")    
+    def get(self, request, id):
+        matrix = data_preparetion()
+        re = SVD(matrix)
+
+        item_sim = np.corrcoef(re)
+        
+        col_idx = matrix.columns.get_loc(int(id)) 
+
+        corr_specific = item_sim[int(col_idx)]
+
+        dataframe = pd.DataFrame({'corr_specific':corr_specific, 'product_id': matrix.columns})\
+        .sort_values('corr_specific', ascending=False)\
+        .head(10)
+
+        data_re = dataframe.to_dict('records')
+        results = RecommendSerializer(data_re, many=True).data
+        return Response(results)
+    

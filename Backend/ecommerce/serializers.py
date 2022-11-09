@@ -10,6 +10,7 @@ from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnico
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from rest_framework.serializers import ModelSerializer
 from rest_framework import status
+
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=68, min_length=6, write_only=True)
 
@@ -183,3 +184,7 @@ class BannerSerializer(ModelSerializer):
     class Meta:
         model = Banner
         fields = '__all__'
+
+class RecommendSerializer(serializers.Serializer):
+    corr_specific = serializers.CharField()
+    product_id = serializers.IntegerField()

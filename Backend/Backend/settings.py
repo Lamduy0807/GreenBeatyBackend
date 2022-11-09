@@ -178,9 +178,10 @@ EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'greenbeautyinfor@gmail.com'
-EMAIL_HOST_PASSWORD = 'GreenBeauty12322132'
+EMAIL_HOST_PASSWORD = 'dmcbycvkjcfrufor'
 DEFAULT_FROM_EMAIL = 'GreenBeauty <noreply@greenbeauty.com>'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "http://localhost:3001"
 ]
