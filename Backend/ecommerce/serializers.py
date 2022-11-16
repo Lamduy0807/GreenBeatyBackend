@@ -188,3 +188,6 @@ class BannerSerializer(ModelSerializer):
 class RecommendSerializer(serializers.Serializer):
     corr_specific = serializers.CharField()
     product_id = serializers.IntegerField()
+
+class RecommendIngredientSerializer(serializers.Serializer):
+    id = serializers.IntegerField()

@@ -27,6 +27,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.decomposition import TruncatedSVD
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import linear_kernel
 
 
 # khúc này mới thêm 4 dòng
@@ -333,4 +335,47 @@ class RecommendViewSet(APIView):
         data_re = dataframe.to_dict('records')
         results = RecommendSerializer(data_re, many=True).data
         return Response(results)
-    
+
+
+def get_ingredient_data():
+        cursor = connection.cursor()
+        cursor.execute("SELECT id , Ingredient FROM doan1db.ecommerce_product")
+        product_user = cursor.fetchall()
+        product = pd.DataFrame(product_user, columns=['id', 'ingredient'])
+        return product
+def transform_data(product):
+        tfidf = TfidfVectorizer(stop_words='english')
+
+#Replace NaN with an empty string
+        product['ingredient'] = product['ingredient'].fillna('')
+
+#Construct the required TF-IDF matrix by fitting and transforming the data
+        tfidf_matrix = tfidf.fit_transform(product['ingredient'])
+        consine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
+
+        return consine_sim
+class RecommendIngredientViewSet(APIView):
+
+    @action (methods=['get'],detail=True,url_path="re", url_name="re")    
+    def get(self, request, id):
+        product = get_ingredient_data()
+        cosine_sim = transform_data(product)
+
+        indices = pd.Series(product.index, index=product['id']).drop_duplicates()
+        idx = indices[int(id)]
+        
+        sim_scores = list(enumerate(cosine_sim[idx]))
+
+        sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+
+        sim_scores = sim_scores[1:11]
+
+        product_indices = [i[0] for i in sim_scores]
+
+        pro_id = product['id'].iloc[product_indices]
+        data = pd.DataFrame(columns=["id"])
+        data['id'] = pro_id
+        data = data.to_dict('records')
+        results = RecommendIngredientSerializer(data, many=True).data
+
+        return Response(results)
